@@ -107,7 +107,7 @@ TEST_CASE("convert [bool] to string", "[toString]") {
     REQUIRE(toString(false) == "false");
 }
 
-TEST_CASE("concatenate string", "[operator+'") {
+TEST_CASE("concatenate string", "[operator+]") {
     string s = "s";
     char c = 'c';
     const char* pc = "abc";
