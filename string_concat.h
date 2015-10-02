@@ -3,24 +3,30 @@
 #ifndef STRING_CONCAT_H
 #define STRING_CONCAT_H
 
-#include <sstream>
 #include <ios>
 #include <iomanip>
+#include "SStreamPool.h"
 
 #define INT_TO_STR_BODY_(n) ({\
-    str_cc_ss.seekp(std::ios::beg); \
-    str_cc_ss << n << '\0'; \
-    return str_cc_ss.str().c_str();\
+    std::stringstream *str_cc_ss = sstreamPool.getSStream(); \
+    str_cc_ss->seekp(std::ios::beg); \
+    (*str_cc_ss) << n << '\0'; \
+    std::string result = str_cc_ss->str().c_str();\
+    sstreamPool.putSStream(str_cc_ss); \
+    return result; \
 })
 
 #define FLOAT_TO_STR_BODY_(val, precision) ({\
-    str_cc_ss.seekp(std::ios::beg);\
-    str_cc_ss << std::setprecision(precision) << val << '\0';\
-    return str_cc_ss.str().c_str();\
+    std::stringstream *str_cc_ss = sstreamPool.getSStream(); \
+    str_cc_ss->seekp(std::ios::beg);\
+    (*str_cc_ss) << std::setprecision(precision) << val << '\0';\
+    std::string result = str_cc_ss->str().c_str();\
+    sstreamPool.putSStream(str_cc_ss); \
+    return result; \
 })
 
 
-static std::stringstream str_cc_ss;
+static SStreamPool& sstreamPool = SStreamPool::getInstanceWithPoolSize(10);
 
 
 std::string toString(const std::string& s) {
