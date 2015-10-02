@@ -4,6 +4,7 @@
 #include <sstream>
 #include <list>
 #include <new>
+#include <pthread.h>
 
 class SStreamPool {
     public:
@@ -15,8 +16,8 @@ class SStreamPool {
         SStreamPool(const int poolSize);
         SStreamPool() {}
 
-        static std::list<std::stringstream*> idleStreams_;
-        static pthread_mutex_t idleStreamsMutex_;
+        std::list<std::stringstream*> idleStreams_;
+        pthread_mutex_t idleStreamsMutex_;
         static SStreamPool *this_;
 };
 

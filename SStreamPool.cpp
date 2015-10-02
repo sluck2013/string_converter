@@ -2,8 +2,8 @@
 #include "MutexLock.h"
 #include <iostream>
 
-std::list<std::stringstream*> SStreamPool::idleStreams_ = std::list<std::stringstream*>(1, NULL);
-pthread_mutex_t SStreamPool::idleStreamsMutex_ = pthread_mutex_t();
+//std::list<std::stringstream*> SStreamPool::idleStreams_ = std::list<std::stringstream*>();
+//pthread_mutex_t SStreamPool::idleStreamsMutex_ = pthread_mutex_t();
 SStreamPool* SStreamPool::this_ = NULL;
 
 SStreamPool& SStreamPool::getInstanceWithPoolSize(const int poolSize) {

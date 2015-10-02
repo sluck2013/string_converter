@@ -5,5 +5,5 @@ using namespace std;
 
 int main() {
     string s = "Hello ";
-    //cout << s + 111223 << endl;
+    cout << s + 111223 << endl;
 }

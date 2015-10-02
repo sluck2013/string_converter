@@ -25,9 +25,7 @@
     return result; \
 })
 
-
 static SStreamPool& sstreamPool = SStreamPool::getInstanceWithPoolSize(10);
-
 
 std::string toString(const std::string& s) {
     return s;
