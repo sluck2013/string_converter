@@ -4,8 +4,11 @@ OBJ_DIR = ../obj
 
 all:SingleThread
 
-SingleThread: catch.hpp string_concat.cpp SingleThread.cpp ../string_concat.h $(OBJ_DIR)/SStreamPool.o $(OBJ_DIR)/MutexLock.o
-	$(CC) -o $@ string_concat.cpp SingleThread.cpp $(OBJ_DIR)/*.o
+SingleThread: catch.hpp SingleThread.cpp ../string_concat.h $(OBJ_DIR)/SStreamPool.o $(OBJ_DIR)/MutexLock.o $(OBJ_DIR)/Common.o
+	$(CC) -o $@ SingleThread.cpp $(OBJ_DIR)/*.o
+
+$(OBJ_DIR)/Common.o: string_concat.cpp
+	$(CC) $(WLEVEL) -c -o $@ $<
 
 $(OBJ_DIR)/SStreamPool.o: ../SStreamPool.cpp ../SStreamPool.h
 	$(CC) $(WLEVEL) -c -o $@ $<

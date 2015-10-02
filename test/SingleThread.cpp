@@ -10,7 +10,7 @@ TEST_CASE("convert [string] to string", "[toString]") {
     REQUIRE(toString(s1) == "test string");
     REQUIRE(toString(s2) == "");
 }
-/*
+
 TEST_CASE("convert [c-style string] to string", "[toString]") {
     const char *c1 = "test c-style string";
     const char *c2 = "";
@@ -141,4 +141,4 @@ TEST_CASE("concatenate string", "[operator+]") {
     REQUIRE(toString(dVal2, 9) + s == "123456.789s");
     REQUIRE(bVal + 1 == 2);
     REQUIRE(bVal + s == "trues");
-}*/
+}
