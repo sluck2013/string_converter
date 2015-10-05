@@ -2,7 +2,7 @@
 #define SSTREAMPOOL_H
 
 #include <sstream>
-#include <list>
+#include <vector>
 #include <new>
 #include <pthread.h>
 
@@ -13,10 +13,16 @@ class SStreamPool {
         void putSStream(std::stringstream *&sstream);
         ~SStreamPool();
     private:
+        class SStream {
+            public:
+                std::stringstream *stream;
+                pthread_mutex_t streamLock;
+        }
+
         SStreamPool(const int poolSize);
         SStreamPool() {}
 
-        std::list<std::stringstream*> idleStreams_;
+        std::vector<SStream> idleStreams_;
         pthread_mutex_t idleStreamsMutex_;
         static SStreamPool *this_;
 };

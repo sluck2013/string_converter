@@ -1,6 +1,7 @@
 #include "SStreamPool.h"
 #include "MutexLock.h"
 #include <iostream>
+#include <vector>
 
 //std::list<std::stringstream*> SStreamPool::idleStreams_ = std::list<std::stringstream*>();
 //pthread_mutex_t SStreamPool::idleStreamsMutex_ = pthread_mutex_t();
@@ -24,6 +25,13 @@ std::stringstream* SStreamPool::getSStream() {
         std::stringstream *sstream = idleStreams_.back();
         idleStreams_.pop_back();
         return sstream;
+    }
+
+    std::vector<std::stringstream>::iterator it = idleStreams_.begin();
+    for (; it != idleStreams_.end(); ++it) {
+        if (pthread_mutex_trylock(&idleStreamsMutex_) == 0) {
+            
+        }
     }
 }
 
