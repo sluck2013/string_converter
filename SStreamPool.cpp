@@ -1,10 +1,9 @@
 #include "SStreamPool.h"
+#include "SStream.h"
 #include "MutexLock.h"
 #include <iostream>
 #include <vector>
 
-//std::list<std::stringstream*> SStreamPool::idleStreams_ = std::list<std::stringstream*>();
-//pthread_mutex_t SStreamPool::idleStreamsMutex_ = pthread_mutex_t();
 SStreamPool* SStreamPool::this_ = NULL;
 
 SStreamPool& SStreamPool::getInstanceWithPoolSize(const int poolSize) {
@@ -15,34 +14,27 @@ SStreamPool& SStreamPool::getInstanceWithPoolSize(const int poolSize) {
     return *this_;
 };
 
-std::stringstream* SStreamPool::getSStream() {
-    MutexLock idleStreamsLock(&idleStreamsMutex_);
-
-    if (idleStreams_.empty()) {
-        std::stringstream *sstream = new std::stringstream();
-        return sstream;
-    } else {
-        std::stringstream *sstream = idleStreams_.back();
-        idleStreams_.pop_back();
-        return sstream;
-    }
-
-    std::vector<std::stringstream>::iterator it = idleStreams_.begin();
+SStream* SStreamPool::getSStream() {
+    std::vector<SStream*>::iterator it = idleStreams_.begin();
     for (; it != idleStreams_.end(); ++it) {
-        if (pthread_mutex_trylock(&idleStreamsMutex_) == 0) {
-            
+        if (pthread_mutex_trylock(&((*it)->streamLock)) == 0) {
+            return *it;
         }
     }
+
+    MutexLock idleStreamsLock(&idleStreamsMutex_);
+    SStream *sstream = new SStream();
+    idleStreams_.push_back(sstream);
+    return sstream;
 }
 
-void SStreamPool::putSStream(std::stringstream *&sstream) {
-    MutexLock idleStreamsLock(&idleStreamsMutex_);
-    idleStreams_.push_back(sstream);
+void SStreamPool::putSStream(SStream *&sstream) {
+    pthread_mutex_unlock(&sstream->streamLock);
     sstream = NULL;
 }
 
 SStreamPool::~SStreamPool() {
-    std::list<std::stringstream*>::iterator streamIt = idleStreams_.begin();
+    std::vector<SStream*>::iterator streamIt = idleStreams_.begin();
     for ( ; streamIt != idleStreams_.end(); ++streamIt) {
         delete *streamIt;
     }
@@ -50,9 +42,10 @@ SStreamPool::~SStreamPool() {
 
 SStreamPool::SStreamPool(const int poolSize) {
     for (int i = 0; i < poolSize; ++i) {
-        std::stringstream *sstream = new std::stringstream();
+        SStream *sstream = new SStream();
         idleStreams_.push_back(sstream);
     }
+
     int r = pthread_mutex_init(&idleStreamsMutex_, NULL);
     if (r != 0) {
         //error

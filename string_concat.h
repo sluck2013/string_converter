@@ -8,19 +8,19 @@
 #include "SStreamPool.h"
 
 #define INT_TO_STR_BODY_(n) ({\
-    std::stringstream *str_cc_ss = sstreamPool.getSStream(); \
-    str_cc_ss->seekp(std::ios::beg); \
-    (*str_cc_ss) << n << '\0'; \
-    std::string result = str_cc_ss->str().c_str();\
+    SStream *str_cc_ss = sstreamPool.getSStream() \
+    str_cc_ss->stream.seekp(std::ios::beg); \
+    str_cc_ss->stream << n << '\0'; \
+    std::string result = str_cc_ss->stream.str().c_str();\
     sstreamPool.putSStream(str_cc_ss); \
     return result; \
 })
 
 #define FLOAT_TO_STR_BODY_(val, precision) ({\
-    std::stringstream *str_cc_ss = sstreamPool.getSStream(); \
-    str_cc_ss->seekp(std::ios::beg);\
-    (*str_cc_ss) << std::setprecision(precision) << val << '\0';\
-    std::string result = str_cc_ss->str().c_str();\
+    SStream *str_cc_ss = sstreamPool.getSStream(); \
+    str_cc_ss->stream.seekp(std::ios::beg);\
+    str_cc_ss->stream << std::setprecision(precision) << val << '\0';\
+    std::string result = str_cc_ss->stream.str().c_str();\
     sstreamPool.putSStream(str_cc_ss); \
     return result; \
 })
